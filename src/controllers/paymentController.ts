@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { PrismaClient, PaymentStatus } from '@prisma/client';
-import nodemailer from 'nodemailer';
+
+// ✅ FIXED: Use require for nodemailer (CommonJS compatibility for Render)
+const nodemailer = require('nodemailer');
 
 const prisma = new PrismaClient();
 
