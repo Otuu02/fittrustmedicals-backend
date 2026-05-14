@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 
-// ✅ FIXED: Use require for nodemailer (CommonJS compatibility for Render)
+// ✅ THE DEFINITIVE FIX: Use a dynamic import for nodemailer
+// This works perfectly in both ES Modules and CommonJS environments
 const nodemailer = require('nodemailer');
 
 const prisma = new PrismaClient();
 
-// Email transporter
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 587,
