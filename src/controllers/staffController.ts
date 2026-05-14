@@ -15,7 +15,6 @@ interface StaffPerformance {
 // Get all staff performance
 export const getStaffPerformance = async (req: Request, res: Response) => {
   try {
-    // Get all users with role STAFF or ADMIN
     const staffUsers = await prisma.user.findMany({
       where: {
         role: {
@@ -34,11 +33,7 @@ export const getStaffPerformance = async (req: Request, res: Response) => {
     const performance: StaffPerformance[] = staffUsers.map((staff) => {
       const paidOrders = staff.orders.filter((order) => order.paymentStatus === 'PAID');
       const totalSales = paidOrders.reduce((sum, order) => sum + order.totalAmount, 0);
-      
-      // Get unique customers served
       const uniqueCustomers = new Set(paidOrders.map((order) => order.userId));
-      
-      // Get last active date from most recent order
       const lastOrderDate = paidOrders.length > 0
         ? new Date(Math.max(...paidOrders.map((o) => new Date(o.createdAt).getTime())))
         : staff.lastLoginAt || staff.createdAt;
@@ -53,7 +48,6 @@ export const getStaffPerformance = async (req: Request, res: Response) => {
       };
     });
 
-    // Sort by total sales descending
     performance.sort((a, b) => b.totalSales - a.totalSales);
 
     return res.status(200).json({
@@ -89,7 +83,6 @@ export const getTopPerformingStaff = async (req: Request, res: Response) => {
     const performance: StaffPerformance[] = staffUsers.map((staff) => {
       const paidOrders = staff.orders.filter((order) => order.paymentStatus === 'PAID');
       const totalSales = paidOrders.reduce((sum, order) => sum + order.totalAmount, 0);
-      
       const uniqueCustomers = new Set(paidOrders.map((order) => order.userId));
 
       return {
@@ -102,7 +95,6 @@ export const getTopPerformingStaff = async (req: Request, res: Response) => {
       };
     });
 
-    // Sort by total sales and take top N
     performance.sort((a, b) => b.totalSales - a.totalSales);
     const topPerformers = performance.slice(0, limit);
 
@@ -122,7 +114,7 @@ export const getStaffPerformanceById = async (req: Request, res: Response) => {
     const { staffId } = req.params;
 
     const staff = await prisma.user.findUnique({
-      where: { id: staffId },
+      where: { id: staffId as string },
       include: {
         orders: {
           where: {
@@ -130,7 +122,6 @@ export const getStaffPerformanceById = async (req: Request, res: Response) => {
           },
           include: {
             items: true,
-            user: true,
           },
         },
       },
