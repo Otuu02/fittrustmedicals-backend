@@ -8,26 +8,26 @@ const prisma = new PrismaClient();
 // ============================================
 export const getBankAccounts = async (req: Request, res: Response) => {
   try {
-    // For now, return a default bank account since we don't have a BankAccount table yet
-    // You can create a BankAccount model in Prisma later
-    const defaultAccounts = [
-      {
-        id: '1',
-        bankName: 'Access Bank',
-        accountNumber: '0039373686',
-        accountName: 'FITTRUST NIG LTD',
-        isDefault: true,
-      },
-      {
-        id: '2',
-        bankName: 'GTBank',
-        accountNumber: '0123456789',
-        accountName: 'FITTRUST NIG LTD',
-        isDefault: false,
-      },
-    ];
+    // Fetch from actual database
+    const bankAccounts = await prisma.bankAccount.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
 
-    return res.status(200).json(defaultAccounts);
+    // If no accounts exist, return default
+    if (bankAccounts.length === 0) {
+      const defaultAccounts = [
+        {
+          id: '1',
+          bankName: 'Access Bank',
+          accountNumber: '0039373686',
+          accountName: 'FITTRUST NIG LTD',
+          isDefault: true,
+        },
+      ];
+      return res.status(200).json(defaultAccounts);
+    }
+
+    return res.status(200).json(bankAccounts);
   } catch (error: any) {
     console.error('Get bank accounts error:', error);
     return res.status(500).json({ success: false, error: error.message });
@@ -48,15 +48,15 @@ export const addBankAccount = async (req: Request, res: Response) => {
       });
     }
 
-    // For now, return success with the new account
-    // In production, save to database
-    const newAccount = {
-      id: Date.now().toString(),
-      bankName,
-      accountNumber,
-      accountName,
-      isDefault: isDefault || false,
-    };
+    // Save to database
+    const newAccount = await prisma.bankAccount.create({
+      data: {
+        bankName,
+        accountNumber,
+        accountName,
+        isDefault: isDefault || false,
+      },
+    });
 
     console.log('✅ New bank account added:', newAccount);
 
@@ -81,6 +81,10 @@ export const removeBankAccount = async (req: Request, res: Response) => {
     if (!id) {
       return res.status(400).json({ success: false, error: 'Account ID required' });
     }
+
+    await prisma.bankAccount.delete({
+      where: { id: id as string },
+    });
 
     console.log(`✅ Bank account ${id} removed`);
 

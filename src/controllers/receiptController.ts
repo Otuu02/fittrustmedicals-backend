@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import nodemailer from 'nodemailer';
+
+// ✅ FIXED: Use require for nodemailer (CommonJS compatibility for Render)
+const nodemailer = require('nodemailer');
 
 const prisma = new PrismaClient();
 
@@ -13,6 +15,14 @@ const transporter = nodemailer.createTransport({
     user: process.env.GMAIL_USERNAME,
     pass: process.env.GMAIL_PASSWORD,
   },
+});
+
+transporter.verify((error: Error | null, success: boolean) => {
+  if (error) {
+    console.error('Email transporter error:', error);
+  } else {
+    console.log('✅ Email server is ready');
+  }
 });
 
 // Generate receipt HTML
@@ -98,16 +108,15 @@ function generateReceiptHTML(order: any, customer: any) {
   `;
 }
 
-// Send receipt to customer
+// Send receipt to single customer
 export const sendReceiptEmail = async (req: Request, res: Response) => {
   try {
-    const { orderId, email, amount } = req.body;
+    const { orderId } = req.params;
 
     if (!orderId) {
       return res.status(400).json({ success: false, error: 'Order ID required' });
     }
 
-    // Get full order details from database
     const order = await prisma.order.findUnique({
       where: { id: orderId },
       include: {
@@ -145,7 +154,7 @@ export const sendReceiptEmail = async (req: Request, res: Response) => {
   }
 };
 
-// Bulk send receipts
+// Send bulk receipts to multiple customers
 export const sendBulkReceipts = async (req: Request, res: Response) => {
   try {
     const { orderIds } = req.body;
