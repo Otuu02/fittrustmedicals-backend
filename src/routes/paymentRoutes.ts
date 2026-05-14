@@ -6,18 +6,31 @@ import {
   getWallet,
   withdrawFunds,
 } from '../controllers/paymentController';
+import { sendReceiptEmail, sendBulkReceipts } from '../controllers/receiptController';
 
 const router = Router();
 
-// Order routes
+// ============================================
+// ORDER ROUTES
+// ============================================
 router.post('/orders', createOrder);
 router.get('/orders', getOrders);
 
-// Admin - Payment confirmation
+// ============================================
+// ADMIN - PAYMENT CONFIRMATION
+// ============================================
 router.post('/admin/confirm-payment', confirmPayment);
 
-// Admin - Wallet management
+// ============================================
+// ADMIN - WALLET MANAGEMENT
+// ============================================
 router.get('/admin/wallet', getWallet);
 router.post('/admin/withdraw', withdrawFunds);
+
+// ============================================
+// RECEIPT ROUTES (Send email receipts to customers)
+// ============================================
+router.post('/orders/:orderId/send-receipt', sendReceiptEmail);
+router.post('/orders/bulk-send-receipts', sendBulkReceipts);
 
 export default router;

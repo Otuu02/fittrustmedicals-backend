@@ -204,12 +204,10 @@ model Order {
   
   referralCode    String?
 
-  // ============================================
-  // MANUAL BANK TRANSFER FIELDS (ADDED)
-  // ============================================
-  transactionReference String?  @unique  // Bank transfer reference number
-  paidAt               DateTime?          // When payment was confirmed
-  paymentConfirmedBy   String?            // Admin ID who confirmed payment
+  // MANUAL BANK TRANSFER FIELDS
+  transactionReference String?  @unique
+  paidAt               DateTime?
+  paymentConfirmedBy   String?
 
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
@@ -223,7 +221,7 @@ model Order {
 model OrderItem {
   id          String   @id @default(cuid())
   orderId     String
-  productId   String?  // ✅ MADE OPTIONAL - FIXES FOREIGN KEY CONSTRAINT
+  productId   String?
   productName String
   quantity    Int
   unitPrice   Float
@@ -231,7 +229,7 @@ model OrderItem {
   updatedAt   DateTime @updatedAt
 
   order   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product Product? @relation(fields: [productId], references: [id], onDelete: SetNull)  // ✅ UPDATED
+  product Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
 
   @@map("order_items")
 }
@@ -277,11 +275,11 @@ model ReferralSale {
 }
 
 // ============================================
-// NEW MODELS FOR MANUAL BANK TRANSFER SYSTEM
+// WALLET AND WITHDRAWAL MODELS
 // ============================================
 
 model Wallet {
-  id               Int      @id @default(1)  // Single row, id = 1
+  id               Int      @id @default(1)
   totalEarned      Float    @default(0)
   totalWithdrawn   Float    @default(0)
   availableBalance Float    @default(0)
@@ -296,9 +294,9 @@ model Withdrawal {
   bankName      String   @default("Access Bank")
   accountNumber String
   accountName   String
-  status        String   @default("completed")  // pending, completed, failed
-  reference     String?  @unique                // Optional withdrawal reference
-  processedBy   String?                         // Admin ID who processed
+  status        String   @default("pending")  // pending, completed, failed
+  reference     String?  @unique
+  processedBy   String?
   notes         String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -306,18 +304,34 @@ model Withdrawal {
   @@map("withdrawals")
 }
 
-// Optional: Add this to track bank transfer payments manually
+// ============================================
+// NEW: BANK ACCOUNT MODEL
+// ============================================
+
+model BankAccount {
+  id            String   @id @default(cuid())
+  bankName      String
+  accountNumber String
+  accountName   String
+  isDefault     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("bank_accounts")
+}
+
+// Optional: Track bank transfer payments manually
 model BankTransferPayment {
   id                String   @id @default(cuid())
   orderId           String   @unique
-  transactionRef    String   @unique                // Customer's bank transaction reference
+  transactionRef    String   @unique
   senderAccountName String
   senderAccountNumber String?
   amount            Float
   paymentDate       DateTime
-  confirmedBy       String?                         // Admin ID who confirmed
+  confirmedBy       String?
   confirmedAt       DateTime?
-  status            String   @default("pending")    // pending, confirmed, rejected
+  status            String   @default("pending")
   notes             String?
   createdAt         DateTime @default(now())
 
