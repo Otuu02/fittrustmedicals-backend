@@ -28,7 +28,7 @@ router.post('/admin/withdrawals', requestWithdrawal);
 router.post('/admin/withdrawals/:id/process', processWithdrawal);
 
 // ============================================
-// WALLET ROUTES (from paymentController)
+// WALLET ROUTES
 // ============================================
 router.get('/admin/wallet', getWallet);
 router.post('/admin/withdraw', withdrawFunds);

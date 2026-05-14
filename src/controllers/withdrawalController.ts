@@ -21,23 +21,26 @@ export const getPendingWithdrawals = async (req: Request, res: Response) => {
 // Request withdrawal
 export const requestWithdrawal = async (req: Request, res: Response) => {
   try {
-    const { amount, bankAccountId } = req.body;
+    const { amount, bankName, accountNumber, accountName } = req.body;
 
     if (!amount || amount <= 0) {
       return res.status(400).json({ success: false, error: 'Invalid amount' });
     }
 
     // Get current wallet balance
-    const totalEarned = await prisma.order.aggregate({
+    const totalEarnedResult = await prisma.order.aggregate({
       where: { paymentStatus: 'PAID' },
       _sum: { totalAmount: true },
     });
 
-    const totalWithdrawn = await prisma.withdrawal.aggregate({
+    const totalWithdrawnResult = await prisma.withdrawal.aggregate({
+      where: { status: 'completed' },
       _sum: { amount: true },
     });
 
-    const availableBalance = (totalEarned._sum.totalAmount || 0) - (totalWithdrawn._sum.amount || 0);
+    const totalEarned = totalEarnedResult._sum.totalAmount || 0;
+    const totalWithdrawn = totalWithdrawnResult._sum.amount || 0;
+    const availableBalance = totalEarned - totalWithdrawn;
 
     if (amount > availableBalance) {
       return res.status(400).json({ success: false, error: 'Insufficient balance' });
@@ -46,9 +49,9 @@ export const requestWithdrawal = async (req: Request, res: Response) => {
     const withdrawal = await prisma.withdrawal.create({
       data: {
         amount,
-        bankName: 'Access Bank',
-        accountNumber: '0039373686',
-        accountName: 'FITTRUST NIG LTD',
+        bankName: bankName || 'Access Bank',
+        accountNumber,
+        accountName,
         status: 'pending',
       },
     });
@@ -64,22 +67,29 @@ export const requestWithdrawal = async (req: Request, res: Response) => {
   }
 };
 
-// Process withdrawal
+// Process withdrawal (approve/reject)
 export const processWithdrawal = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    const { action, notes } = req.body; // action: 'approve' or 'reject'
+
+    if (!id) {
+      return res.status(400).json({ success: false, error: 'Withdrawal ID required' });
+    }
+
+    const newStatus = action === 'approve' ? 'completed' : 'failed';
 
     const updated = await prisma.withdrawal.update({
       where: { id: id as string },
       data: {
-        status: 'completed',
-        processedAt: new Date(),
+        status: newStatus,
+        notes: notes || null,
       },
     });
 
     return res.status(200).json({
       success: true,
-      message: 'Withdrawal processed successfully',
+      message: `Withdrawal ${action}d successfully`,
       data: updated,
     });
   } catch (error: any) {
