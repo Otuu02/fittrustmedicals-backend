@@ -1,0 +1,27 @@
+export enum UserRole {
+  CUSTOMER = "CUSTOMER",
+  ADMIN = "ADMIN",
+  STAFF = "STAFF",
+}
+
+export enum UserStatus {
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+  SUSPENDED = "SUSPENDED",
+}
+
+export enum OrderStatus {
+  PENDING = "PENDING",
+  CONFIRMED = "CONFIRMED",
+  PROCESSING = "PROCESSING",
+  SHIPPED = "SHIPPED",
+  DELIVERED = "DELIVERED",
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED",
+}
+
+export enum InventoryType {
+  STOCK_IN = "STOCK_IN",
+  STOCK_OUT = "STOCK_OUT",
+  ADJUSTMENT = "ADJUSTMENT",
+}

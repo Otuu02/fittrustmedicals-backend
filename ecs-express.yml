@@ -1,0 +1,33 @@
+app:
+  name: fittrustmedicals-backend
+  port: 3001
+  dockerfile: Dockerfile
+aws:
+  region: eu-north-1
+environments:
+  dev:
+    cpu: 256
+    memory: 512
+    desiredCount: 1
+    port: 3001
+    healthCheckPath: /health
+    scaling:
+      minTasks: 1
+      maxTasks: 5
+      targetCpuPercent: 70
+      targetMemoryPercent: 70
+    envVars:
+      NODE_ENV: development
+  prod:
+    cpu: 512
+    memory: 1024
+    desiredCount: 2
+    port: 3001
+    healthCheckPath: /health
+    scaling:
+      minTasks: 2
+      maxTasks: 50
+      targetCpuPercent: 60
+      targetMemoryPercent: 60
+    envVars:
+      NODE_ENV: production
