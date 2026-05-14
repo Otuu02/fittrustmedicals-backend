@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 
-// ✅ THE DEFINITIVE FIX: Use a dynamic import for nodemailer
-// This works perfectly in both ES Modules and CommonJS environments
+// Use require for nodemailer (CommonJS compatibility for Render)
 const nodemailer = require('nodemailer');
 
 const prisma = new PrismaClient();
 
+// Email transporter
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 587,
@@ -117,8 +117,9 @@ export const sendReceiptEmail = async (req: Request, res: Response) => {
       return res.status(400).json({ success: false, error: 'Order ID required' });
     }
 
+    // ✅ FIXED: Cast orderId to string and include user relation
     const order = await prisma.order.findUnique({
-      where: { id: orderId },
+      where: { id: orderId as string },
       include: {
         user: true,
         items: true,
@@ -168,8 +169,9 @@ export const sendBulkReceipts = async (req: Request, res: Response) => {
 
     for (const orderId of orderIds) {
       try {
+        // ✅ FIXED: Include user relation
         const order = await prisma.order.findUnique({
-          where: { id: orderId },
+          where: { id: orderId as string },
           include: { user: true, items: true },
         });
 
