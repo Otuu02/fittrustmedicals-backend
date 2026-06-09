@@ -1,6 +1,7 @@
 {
   "name": "fittrustmedicals-backend",
   "version": "1.0.0",
+  "license": "MIT",
   "description": "Fittrust Medicals Backend API",
   "main": "dist/main.js",
   "scripts": {

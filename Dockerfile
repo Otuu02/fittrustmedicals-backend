@@ -11,8 +11,9 @@ RUN apt-get update && apt-get install -y \
 
 # Copy package files and install dependencies
 COPY package*.json ./
-COPY yarn.lock ./
-RUN yarn install --frozen-lockfile --ignore-engines
+
+# Install dependencies (without frozen-lockfile to avoid sync issues)
+RUN yarn install --ignore-engines
 
 # Copy source code and generate Prisma client
 COPY . .
@@ -37,7 +38,6 @@ RUN apt-get update && apt-get install -y \
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/yarn.lock ./
 
 # Set environment variables
 ENV NODE_ENV=production
