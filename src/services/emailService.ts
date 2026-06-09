@@ -77,7 +77,7 @@ async function generatePDFReceipt(order: Order, customer: Customer): Promise<Buf
       // Colors
       const primaryColor = '#0b4f6c';
       const secondaryColor = '#1e3a8a';
-      const accentColor = '#10b981';
+      const greenColor = '#10b981';
       
       // Header with Logo/Brand
       doc.fontSize(24)
@@ -203,12 +203,15 @@ async function generatePDFReceipt(order: Order, customer: Customer): Promise<Buf
       doc.text('Subtotal:', 360, currentY)
          .text(formatNaira(totalAmount), 530, currentY, { align: 'right' });
       
-      doc.text('Shipping:', 360, currentY + 18)
-         .text('FREE', 530, currentY + 18, { align: 'right', color: '#10b981' });
+      // FIXED: Use fillColor for green text instead of 'color' property
+      doc.fillColor(greenColor)
+         .text('Shipping:', 360, currentY + 18)
+         .text('FREE', 530, currentY + 18, { align: 'right' });
       
-      doc.font('Helvetica-Bold')
+      // Reset color for grand total
+      doc.fillColor(primaryColor)
+         .font('Helvetica-Bold')
          .fontSize(14)
-         .fillColor(primaryColor)
          .text('GRAND TOTAL:', 360, currentY + 40)
          .text(formatNaira(totalAmount), 530, currentY + 40, { align: 'right' });
       
