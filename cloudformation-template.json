@@ -1,0 +1,1518 @@
+{
+ "Description": "ecs-express managed stack for fittrustmedicals-backend/dev",
+ "Resources": {
+  "EcrRepoBB83A592": {
+   "Type": "AWS::ECR::Repository",
+   "Properties": {
+    "EmptyOnDelete": true,
+    "ImageScanningConfiguration": {
+     "ScanOnPush": true
+    },
+    "LifecyclePolicy": {
+     "LifecyclePolicyText": "{\"rules\":[{\"rulePriority\":1,\"description\":\"Keep last 20 images\",\"selection\":{\"tagStatus\":\"any\",\"countType\":\"imageCountMoreThan\",\"countNumber\":20},\"action\":{\"type\":\"expire\"}}]}"
+    },
+    "RepositoryName": "ecs-express/fittrustmedicals-backend",
+    "Tags": [
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/EcrRepo/Resource"
+   }
+  },
+  "Vpc8378EB38": {
+   "Type": "AWS::EC2::VPC",
+   "Properties": {
+    "CidrBlock": "10.0.0.0/16",
+    "EnableDnsHostnames": true,
+    "EnableDnsSupport": true,
+    "InstanceTenancy": "default",
+    "Tags": [
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     },
+     {
+      "Key": "Name",
+      "Value": "EcsExpress-fittrustmedicals-backend-dev/Vpc"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Vpc/Resource"
+   }
+  },
+  "VpcpublicSubnet1Subnet2BB74ED7": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "eu-north-1a",
+    "CidrBlock": "10.0.0.0/24",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     },
+     {
+      "Key": "Name",
+      "Value": "EcsExpress-fittrustmedicals-backend-dev/Vpc/publicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Vpc/publicSubnet1/Subnet"
+   }
+  },
+  "VpcpublicSubnet1RouteTable15C15F8E": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     },
+     {
+      "Key": "Name",
+      "Value": "EcsExpress-fittrustmedicals-backend-dev/Vpc/publicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Vpc/publicSubnet1/RouteTable"
+   }
+  },
+  "VpcpublicSubnet1RouteTableAssociation4E83B6E4": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "VpcpublicSubnet1RouteTable15C15F8E"
+    },
+    "SubnetId": {
+     "Ref": "VpcpublicSubnet1Subnet2BB74ED7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Vpc/publicSubnet1/RouteTableAssociation"
+   }
+  },
+  "VpcpublicSubnet1DefaultRouteB88F9E93": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "VpcIGWD7BA715C"
+    },
+    "RouteTableId": {
+     "Ref": "VpcpublicSubnet1RouteTable15C15F8E"
+    }
+   },
+   "DependsOn": [
+    "VpcVPCGWBF912B6E"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Vpc/publicSubnet1/DefaultRoute"
+   }
+  },
+  "VpcpublicSubnet1EIP411541E6": {
+   "Type": "AWS::EC2::EIP",
+   "Properties": {
+    "Domain": "vpc",
+    "Tags": [
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     },
+     {
+      "Key": "Name",
+      "Value": "EcsExpress-fittrustmedicals-backend-dev/Vpc/publicSubnet1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Vpc/publicSubnet1/EIP"
+   }
+  },
+  "VpcpublicSubnet1NATGatewayA036E8A6": {
+   "Type": "AWS::EC2::NatGateway",
+   "Properties": {
+    "AllocationId": {
+     "Fn::GetAtt": [
+      "VpcpublicSubnet1EIP411541E6",
+      "AllocationId"
+     ]
+    },
+    "SubnetId": {
+     "Ref": "VpcpublicSubnet1Subnet2BB74ED7"
+    },
+    "Tags": [
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     },
+     {
+      "Key": "Name",
+      "Value": "EcsExpress-fittrustmedicals-backend-dev/Vpc/publicSubnet1"
+     }
+    ]
+   },
+   "DependsOn": [
+    "VpcpublicSubnet1DefaultRouteB88F9E93",
+    "VpcpublicSubnet1RouteTableAssociation4E83B6E4"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Vpc/publicSubnet1/NATGateway"
+   }
+  },
+  "VpcpublicSubnet2SubnetE34B022A": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "eu-north-1b",
+    "CidrBlock": "10.0.1.0/24",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     },
+     {
+      "Key": "Name",
+      "Value": "EcsExpress-fittrustmedicals-backend-dev/Vpc/publicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Vpc/publicSubnet2/Subnet"
+   }
+  },
+  "VpcpublicSubnet2RouteTableC5A6DF77": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     },
+     {
+      "Key": "Name",
+      "Value": "EcsExpress-fittrustmedicals-backend-dev/Vpc/publicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Vpc/publicSubnet2/RouteTable"
+   }
+  },
+  "VpcpublicSubnet2RouteTableAssociationCCE257FF": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "VpcpublicSubnet2RouteTableC5A6DF77"
+    },
+    "SubnetId": {
+     "Ref": "VpcpublicSubnet2SubnetE34B022A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Vpc/publicSubnet2/RouteTableAssociation"
+   }
+  },
+  "VpcpublicSubnet2DefaultRoute732F0BEB": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "VpcIGWD7BA715C"
+    },
+    "RouteTableId": {
+     "Ref": "VpcpublicSubnet2RouteTableC5A6DF77"
+    }
+   },
+   "DependsOn": [
+    "VpcVPCGWBF912B6E"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Vpc/publicSubnet2/DefaultRoute"
+   }
+  },
+  "VpcprivateSubnet1SubnetCEAD3716": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "eu-north-1a",
+    "CidrBlock": "10.0.2.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     },
+     {
+      "Key": "Name",
+      "Value": "EcsExpress-fittrustmedicals-backend-dev/Vpc/privateSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Vpc/privateSubnet1/Subnet"
+   }
+  },
+  "VpcprivateSubnet1RouteTable1979EACB": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     },
+     {
+      "Key": "Name",
+      "Value": "EcsExpress-fittrustmedicals-backend-dev/Vpc/privateSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Vpc/privateSubnet1/RouteTable"
+   }
+  },
+  "VpcprivateSubnet1RouteTableAssociationEEBD93CE": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "VpcprivateSubnet1RouteTable1979EACB"
+    },
+    "SubnetId": {
+     "Ref": "VpcprivateSubnet1SubnetCEAD3716"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Vpc/privateSubnet1/RouteTableAssociation"
+   }
+  },
+  "VpcprivateSubnet1DefaultRouteB506891A": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "VpcpublicSubnet1NATGatewayA036E8A6"
+    },
+    "RouteTableId": {
+     "Ref": "VpcprivateSubnet1RouteTable1979EACB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Vpc/privateSubnet1/DefaultRoute"
+   }
+  },
+  "VpcprivateSubnet2Subnet2DE7549C": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "eu-north-1b",
+    "CidrBlock": "10.0.3.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     },
+     {
+      "Key": "Name",
+      "Value": "EcsExpress-fittrustmedicals-backend-dev/Vpc/privateSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Vpc/privateSubnet2/Subnet"
+   }
+  },
+  "VpcprivateSubnet2RouteTable4D0FFC8C": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     },
+     {
+      "Key": "Name",
+      "Value": "EcsExpress-fittrustmedicals-backend-dev/Vpc/privateSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Vpc/privateSubnet2/RouteTable"
+   }
+  },
+  "VpcprivateSubnet2RouteTableAssociationB691E645": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "VpcprivateSubnet2RouteTable4D0FFC8C"
+    },
+    "SubnetId": {
+     "Ref": "VpcprivateSubnet2Subnet2DE7549C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Vpc/privateSubnet2/RouteTableAssociation"
+   }
+  },
+  "VpcprivateSubnet2DefaultRouteBAC3C1C3": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "VpcpublicSubnet1NATGatewayA036E8A6"
+    },
+    "RouteTableId": {
+     "Ref": "VpcprivateSubnet2RouteTable4D0FFC8C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Vpc/privateSubnet2/DefaultRoute"
+   }
+  },
+  "VpcIGWD7BA715C": {
+   "Type": "AWS::EC2::InternetGateway",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     },
+     {
+      "Key": "Name",
+      "Value": "EcsExpress-fittrustmedicals-backend-dev/Vpc"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Vpc/IGW"
+   }
+  },
+  "VpcVPCGWBF912B6E": {
+   "Type": "AWS::EC2::VPCGatewayAttachment",
+   "Properties": {
+    "InternetGatewayId": {
+     "Ref": "VpcIGWD7BA715C"
+    },
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Vpc/VPCGW"
+   }
+  },
+  "ClusterEB0386A7": {
+   "Type": "AWS::ECS::Cluster",
+   "Properties": {
+    "ClusterName": "fittrustmedicals-backend-dev",
+    "ClusterSettings": [
+     {
+      "Name": "containerInsights",
+      "Value": "enabled"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/Cluster/Resource"
+   }
+  },
+  "LogGroupF5B46931": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/ecs-express/fittrustmedicals-backend/dev",
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/LogGroup/Resource"
+   }
+  },
+  "ExecutionRole605A040B": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/ExecutionRole/Resource"
+   }
+  },
+  "ExecutionRoleDefaultPolicyA5B92313": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "EcrRepoBB83A592",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": "ecr:GetAuthorizationToken",
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Ref": "AppSecretFAB5164C"
+       }
+      },
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "LogGroupF5B46931",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ExecutionRoleDefaultPolicyA5B92313",
+    "Roles": [
+     {
+      "Ref": "ExecutionRole605A040B"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/ExecutionRole/DefaultPolicy/Resource"
+   }
+  },
+  "TaskRole30FC0FBB": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "Task role for fittrustmedicals-backend/dev",
+    "Tags": [
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/TaskRole/Resource"
+   }
+  },
+  "TaskRoleDefaultPolicy07FC53DE": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Ref": "AppSecretFAB5164C"
+       }
+      },
+      {
+       "Action": [
+        "ssmmessages:CreateControlChannel",
+        "ssmmessages:CreateDataChannel",
+        "ssmmessages:OpenControlChannel",
+        "ssmmessages:OpenDataChannel"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": "logs:DescribeLogGroups",
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:DescribeLogStreams",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "TaskRoleDefaultPolicy07FC53DE",
+    "Roles": [
+     {
+      "Ref": "TaskRole30FC0FBB"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/TaskRole/DefaultPolicy/Resource"
+   }
+  },
+  "AppSecretFAB5164C": {
+   "Type": "AWS::SecretsManager::Secret",
+   "Properties": {
+    "Description": "Application secrets for fittrustmedicals-backend (dev)",
+    "GenerateSecretString": {
+     "GenerateStringKey": "_placeholder",
+     "SecretStringTemplate": "{}"
+    },
+    "Name": "ecs-express/fittrustmedicals-backend/dev/secrets",
+    "Tags": [
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/AppSecret/Resource"
+   }
+  },
+  "TaskDef54694570": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Command": [
+       "/bin/sh",
+       "-c",
+       "echo 'server { listen 3001; location / { return 200 \"ok\"; } }' > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+      ],
+      "Environment": [
+       {
+        "Name": "PORT",
+        "Value": "3001"
+       },
+       {
+        "Name": "NGINX_PORT",
+        "Value": "3001"
+       },
+       {
+        "Name": "NODE_ENV",
+        "Value": "development"
+       }
+      ],
+      "Essential": true,
+      "Image": "public.ecr.aws/docker/library/nginx:alpine",
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "LogGroupF5B46931"
+        },
+        "awslogs-stream-prefix": "app",
+        "awslogs-region": "eu-north-1"
+       }
+      },
+      "Name": "app",
+      "PortMappings": [
+       {
+        "ContainerPort": 3001,
+        "Protocol": "tcp"
+       }
+      ],
+      "Secrets": [
+       {
+        "Name": "_APP_SECRETS_JSON",
+        "ValueFrom": {
+         "Ref": "AppSecretFAB5164C"
+        }
+       }
+      ]
+     }
+    ],
+    "Cpu": "256",
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "ExecutionRole605A040B",
+      "Arn"
+     ]
+    },
+    "Family": "fittrustmedicals-backend-dev",
+    "Memory": "512",
+    "NetworkMode": "awsvpc",
+    "RequiresCompatibilities": [
+     "FARGATE"
+    ],
+    "Tags": [
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     }
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "TaskRole30FC0FBB",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/TaskDef/Resource"
+   }
+  },
+  "ServiceSg2632F788": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "ECS tasks for fittrustmedicals-backend/dev",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "Description": "ALB to ECS tasks",
+      "FromPort": 3001,
+      "IpProtocol": "tcp",
+      "SourceSecurityGroupId": {
+       "Fn::GetAtt": [
+        "AlbServiceLBSecurityGroup8252B36C",
+        "GroupId"
+       ]
+      },
+      "ToPort": 3001
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/ServiceSg/Resource"
+   }
+  },
+  "ServiceSgfromEcsExpressfittrustmedicalsbackenddevAlbServiceLBSecurityGroup32F21DF43001D23D2563": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Load balancer to target",
+    "FromPort": 3001,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "ServiceSg2632F788",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "AlbServiceLBSecurityGroup8252B36C",
+      "GroupId"
+     ]
+    },
+    "ToPort": 3001
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/ServiceSg/from EcsExpressfittrustmedicalsbackenddevAlbServiceLBSecurityGroup32F21DF4:3001"
+   }
+  },
+  "AlbServiceLBC8810931": {
+   "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+   "Properties": {
+    "LoadBalancerAttributes": [
+     {
+      "Key": "deletion_protection.enabled",
+      "Value": "false"
+     },
+     {
+      "Key": "routing.http.drop_invalid_header_fields.enabled",
+      "Value": "true"
+     }
+    ],
+    "Scheme": "internet-facing",
+    "SecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "AlbServiceLBSecurityGroup8252B36C",
+       "GroupId"
+      ]
+     }
+    ],
+    "Subnets": [
+     {
+      "Ref": "VpcpublicSubnet1Subnet2BB74ED7"
+     },
+     {
+      "Ref": "VpcpublicSubnet2SubnetE34B022A"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     }
+    ],
+    "Type": "application"
+   },
+   "DependsOn": [
+    "VpcpublicSubnet1DefaultRouteB88F9E93",
+    "VpcpublicSubnet1RouteTableAssociation4E83B6E4",
+    "VpcpublicSubnet2DefaultRoute732F0BEB",
+    "VpcpublicSubnet2RouteTableAssociationCCE257FF"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/AlbService/LB/Resource"
+   }
+  },
+  "AlbServiceLBSecurityGroup8252B36C": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Automatically created Security Group for ELB EcsExpressfittrustmedicalsbackenddevAlbServiceLBA2AFE7C4",
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow from anyone on port 80",
+      "FromPort": 80,
+      "IpProtocol": "tcp",
+      "ToPort": 80
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/AlbService/LB/SecurityGroup/Resource"
+   }
+  },
+  "AlbServiceLBSecurityGrouptoEcsExpressfittrustmedicalsbackenddevServiceSg2591BD2D3001BB877E3C": {
+   "Type": "AWS::EC2::SecurityGroupEgress",
+   "Properties": {
+    "Description": "Load balancer to target",
+    "DestinationSecurityGroupId": {
+     "Fn::GetAtt": [
+      "ServiceSg2632F788",
+      "GroupId"
+     ]
+    },
+    "FromPort": 3001,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "AlbServiceLBSecurityGroup8252B36C",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "ToPort": 3001
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/AlbService/LB/SecurityGroup/to EcsExpressfittrustmedicalsbackenddevServiceSg2591BD2D:3001"
+   }
+  },
+  "AlbServiceLBPublicListenerBA3B1C65": {
+   "Type": "AWS::ElasticLoadBalancingV2::Listener",
+   "Properties": {
+    "DefaultActions": [
+     {
+      "TargetGroupArn": {
+       "Ref": "AlbServiceLBPublicListenerECSGroup0109A814"
+      },
+      "Type": "forward"
+     }
+    ],
+    "LoadBalancerArn": {
+     "Ref": "AlbServiceLBC8810931"
+    },
+    "Port": 80,
+    "Protocol": "HTTP"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/AlbService/LB/PublicListener/Resource"
+   }
+  },
+  "AlbServiceLBPublicListenerECSGroup0109A814": {
+   "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+   "Properties": {
+    "HealthCheckIntervalSeconds": 30,
+    "HealthCheckPath": "/",
+    "HealthyThresholdCount": 2,
+    "Port": 80,
+    "Protocol": "HTTP",
+    "Tags": [
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     }
+    ],
+    "TargetGroupAttributes": [
+     {
+      "Key": "stickiness.enabled",
+      "Value": "false"
+     }
+    ],
+    "TargetType": "ip",
+    "UnhealthyThresholdCount": 3,
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/AlbService/LB/PublicListener/ECSGroup/Resource"
+   }
+  },
+  "AlbService0F7E002B": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Ref": "ClusterEB0386A7"
+    },
+    "DeploymentConfiguration": {
+     "Alarms": {
+      "AlarmNames": [],
+      "Enable": false,
+      "Rollback": false
+     },
+     "DeploymentCircuitBreaker": {
+      "Enable": true,
+      "Rollback": true
+     },
+     "MaximumPercent": 200,
+     "MinimumHealthyPercent": 50
+    },
+    "DesiredCount": 1,
+    "EnableECSManagedTags": false,
+    "EnableExecuteCommand": true,
+    "HealthCheckGracePeriodSeconds": 120,
+    "LaunchType": "FARGATE",
+    "LoadBalancers": [
+     {
+      "ContainerName": "app",
+      "ContainerPort": 3001,
+      "TargetGroupArn": {
+       "Ref": "AlbServiceLBPublicListenerECSGroup0109A814"
+      }
+     }
+    ],
+    "NetworkConfiguration": {
+     "AwsvpcConfiguration": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+       {
+        "Fn::GetAtt": [
+         "ServiceSg2632F788",
+         "GroupId"
+        ]
+       }
+      ],
+      "Subnets": [
+       {
+        "Ref": "VpcprivateSubnet1SubnetCEAD3716"
+       },
+       {
+        "Ref": "VpcprivateSubnet2Subnet2DE7549C"
+       }
+      ]
+     }
+    },
+    "ServiceName": "fittrustmedicals-backend-dev",
+    "Tags": [
+     {
+      "Key": "ecs-express:app",
+      "Value": "fittrustmedicals-backend"
+     },
+     {
+      "Key": "ecs-express:env",
+      "Value": "dev"
+     },
+     {
+      "Key": "ecs-express:managed",
+      "Value": "true"
+     }
+    ],
+    "TaskDefinition": {
+     "Ref": "TaskDef54694570"
+    }
+   },
+   "DependsOn": [
+    "AlbServiceLBPublicListenerECSGroup0109A814",
+    "AlbServiceLBPublicListenerBA3B1C65",
+    "TaskRoleDefaultPolicy07FC53DE",
+    "TaskRole30FC0FBB"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/AlbService/Service/Service"
+   }
+  },
+  "AlbServiceTaskCountTarget330BC25A": {
+   "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
+   "Properties": {
+    "MaxCapacity": 5,
+    "MinCapacity": 1,
+    "ResourceId": {
+     "Fn::Join": [
+      "",
+      [
+       "service/",
+       {
+        "Ref": "ClusterEB0386A7"
+       },
+       "/",
+       {
+        "Fn::GetAtt": [
+         "AlbService0F7E002B",
+         "Name"
+        ]
+       }
+      ]
+     ]
+    },
+    "RoleARN": "arn:aws:iam::160885268044:role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService",
+    "ScalableDimension": "ecs:service:DesiredCount",
+    "ServiceNamespace": "ecs"
+   },
+   "DependsOn": [
+    "TaskRoleDefaultPolicy07FC53DE",
+    "TaskRole30FC0FBB"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/AlbService/Service/TaskCount/Target/Resource"
+   }
+  },
+  "AlbServiceTaskCountTargetCpuScaling04FB696B": {
+   "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+   "Properties": {
+    "PolicyName": "EcsExpressfittrustmedicalsbackenddevAlbServiceTaskCountTargetCpuScalingE382054B",
+    "PolicyType": "TargetTrackingScaling",
+    "ScalingTargetId": {
+     "Ref": "AlbServiceTaskCountTarget330BC25A"
+    },
+    "TargetTrackingScalingPolicyConfiguration": {
+     "PredefinedMetricSpecification": {
+      "PredefinedMetricType": "ECSServiceAverageCPUUtilization"
+     },
+     "ScaleInCooldown": 120,
+     "ScaleOutCooldown": 60,
+     "TargetValue": 70
+    }
+   },
+   "DependsOn": [
+    "TaskRoleDefaultPolicy07FC53DE",
+    "TaskRole30FC0FBB"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/AlbService/Service/TaskCount/Target/CpuScaling/Resource"
+   }
+  },
+  "AlbServiceTaskCountTargetMemoryScalingF32EB771": {
+   "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+   "Properties": {
+    "PolicyName": "EcsExpressfittrustmedicalsbackenddevAlbServiceTaskCountTargetMemoryScaling268EC604",
+    "PolicyType": "TargetTrackingScaling",
+    "ScalingTargetId": {
+     "Ref": "AlbServiceTaskCountTarget330BC25A"
+    },
+    "TargetTrackingScalingPolicyConfiguration": {
+     "PredefinedMetricSpecification": {
+      "PredefinedMetricType": "ECSServiceAverageMemoryUtilization"
+     },
+     "ScaleInCooldown": 120,
+     "ScaleOutCooldown": 60,
+     "TargetValue": 70
+    }
+   },
+   "DependsOn": [
+    "TaskRoleDefaultPolicy07FC53DE",
+    "TaskRole30FC0FBB"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/AlbService/Service/TaskCount/Target/MemoryScaling/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/31T0W7bMAz8lr0r2mZgH5BmXRGgWA076GvByKzHRpEMkUoQCP73QbYTu12xJx5PR4F3ggpd/Piuv32BM69Mc1hZ2utUC5iDgjO/JDRBpwo7zyQ+XNTm1c1dr9AUOj13JvPP5UaVcW/J1HHvUDI3o8pHwR3sLc78zK2ZvSEQ8u4mzuB+W+byG+QBBM9wUWWgEwjOF2+dYHB4E4ybTN1aBMyfIzpRNZoYSC4Pwcdu2OG/xNa1AZn/4e8HOjtnnTY2smDIoiv8BaGF7IoPP/GVHF09fWS8EyCHYcFNszWGE5kxpwnWBmzOKV+y8dFJr6xvWadH3972v+JeERx1qvyY9VBLb8kM4YyoV4wmoPARHLQYdKqHfvIbUAaLLx1Ijpf1uussmeGFHj00d2DBGWw+rIwWWMhYD81+UJBrT4VOn0+HcetFv9QRC7pJc8WL8x2EFuVmftH2CmYZRPFswJJrdZpjzOLB63tmLLsA5kCurce5Obt3RN+rCtnHMD7VU5QuSq+cb1C/8ddTUegif603JlqF6ISOqKux/gU+gz8tdwMAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcsExpress-fittrustmedicals-backend-dev/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "AlbServiceLoadBalancerDNSBD7C2D38": {
+   "Value": {
+    "Fn::GetAtt": [
+     "AlbServiceLBC8810931",
+     "DNSName"
+    ]
+   }
+  },
+  "AlbServiceServiceURL84868AA1": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "http://",
+      {
+       "Fn::GetAtt": [
+        "AlbServiceLBC8810931",
+        "DNSName"
+       ]
+      }
+     ]
+    ]
+   }
+  },
+  "AlbDnsName": {
+   "Value": {
+    "Fn::GetAtt": [
+     "AlbServiceLBC8810931",
+     "DNSName"
+    ]
+   }
+  },
+  "EcrRepositoryUri": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      {
+       "Fn::Select": [
+        4,
+        {
+         "Fn::Split": [
+          ":",
+          {
+           "Fn::GetAtt": [
+            "EcrRepoBB83A592",
+            "Arn"
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      ".dkr.ecr.",
+      {
+       "Fn::Select": [
+        3,
+        {
+         "Fn::Split": [
+          ":",
+          {
+           "Fn::GetAtt": [
+            "EcrRepoBB83A592",
+            "Arn"
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      ".",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "EcrRepoBB83A592"
+      }
+     ]
+    ]
+   }
+  },
+  "ClusterArn": {
+   "Value": {
+    "Fn::GetAtt": [
+     "ClusterEB0386A7",
+     "Arn"
+    ]
+   }
+  },
+  "ServiceName": {
+   "Value": {
+    "Fn::GetAtt": [
+     "AlbService0F7E002B",
+     "Name"
+    ]
+   }
+  },
+  "LogGroupName": {
+   "Value": {
+    "Ref": "LogGroupF5B46931"
+   }
+  },
+  "TaskRoleArn": {
+   "Value": {
+    "Fn::GetAtt": [
+     "TaskRole30FC0FBB",
+     "Arn"
+    ]
+   }
+  },
+  "SecretArn": {
+   "Value": {
+    "Ref": "AppSecretFAB5164C"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
